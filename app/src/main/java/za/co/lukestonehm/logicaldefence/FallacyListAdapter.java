@@ -2,6 +2,7 @@ package za.co.lukestonehm.logicaldefence;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,11 +40,20 @@ public class FallacyListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(final int i, View view, ViewGroup viewGroup) {
         LayoutInflater mInflater = (LayoutInflater)
                 c.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
         view = mInflater.inflate(R.layout.list_item, null);
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Intent intent = new Intent(MainActivity.LONG_PRESS_ACTION);
+                intent.putExtra(LongPressReceiver.POS_EXTRA, i);
+                c.sendBroadcast(intent);
+                return true;
+            }
+        });
 
         Fallacy f = fallaciesItems.get(i);
 

@@ -2,15 +2,18 @@ package za.co.lukestonehm.logicaldefence;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +33,8 @@ public class MainActivity extends ActionBarActivity
         implements NavCallback {
 
 
-    public static final String TAG = "LogicalDefence";
+    public static final String TAG = "LogicalDefence",
+            LONG_PRESS_ACTION = "LogicalDefence.LPA";
 
     private CharSequence mTitle;
     private String[] sections;
@@ -45,6 +50,8 @@ public class MainActivity extends ActionBarActivity
 
     AppPreferences appPrefs;
 
+    LongPressReceiver lpr;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +62,10 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
         mCallbacks = this;
         appPrefs = new AppPreferences(this);
+
+        lpr = new LongPressReceiver(this);
+        IntentFilter lprFilter = new IntentFilter(LONG_PRESS_ACTION);
+        registerReceiver(lpr, lprFilter);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
@@ -180,6 +191,27 @@ public class MainActivity extends ActionBarActivity
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void fallacyLongPressCallback(int position) {
+        Log.d(TAG, "LongPressReceived: " + position);
+        String[] titles = getStringArrByName("fallacies_titles_" + (appPrefs.getSection() + 1));
+        Toast.makeText(this, titles[position], Toast.LENGTH_SHORT).show();
+        fallacyLongPress(position);
+    }
+
+    public void fallacyLongPress(int position) {
+        getSupportActionBar().setCustomView(R.layout.fallacy_long_press);
+        getSupportActionBar().setDisplayOptions(0, ActionBar.DISPLAY_SHOW_HOME);
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+    }
+
+    private String[] getStringArrByName(String name) {
+        int i = getResources().getIdentifier(name, "array",
+                this.getPackageName()); // You had used "name"
+        return getResources().getStringArray(i);
+    }
+
 
     /**
      * A placeholder fragment containing a simple view.

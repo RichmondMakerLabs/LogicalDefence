@@ -8,4 +8,6 @@ public interface NavCallback {
      * Called when an item in the navigation drawer is selected.
      */
     void onNavigationDrawerItemSelected(int position);
+
+    void fallacyLongPressCallback(int position);
 }
