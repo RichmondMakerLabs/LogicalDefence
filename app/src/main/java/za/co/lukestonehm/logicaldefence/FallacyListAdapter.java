@@ -3,6 +3,9 @@ package za.co.lukestonehm.logicaldefence;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +52,32 @@ public class FallacyListAdapter extends BaseAdapter {
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+                Resources res = c.getResources();
+
+                Drawable[] dArr = new Drawable[2];
+                dArr[0] = view.getBackground();
+                dArr[1] = res.getDrawable(R.drawable.list_item_select);
+
+                Drawable[] contentDArr = new Drawable[2];
+                contentDArr[0] = view.findViewById(R.id.fallacy_desc).getBackground();
+                contentDArr[1] = res.getDrawable(R.drawable.list_item_select_content);
+
+                TransitionDrawable ani = new TransitionDrawable(dArr);
+                TransitionDrawable contentAni = new TransitionDrawable(contentDArr);
+
+                View desc = view.findViewById(R.id.fallacy_desc);
+                View example = view.findViewById(R.id.fallacy_example);
+
+                view.setBackground(ani);
+                desc.setBackground(contentAni);
+                example.setBackground(contentAni);
+
+                ani.setCrossFadeEnabled(true);
+                ani.startTransition(250);
+
+                contentAni.setCrossFadeEnabled(true);
+                contentAni.startTransition(250);
+
                 Intent intent = new Intent(MainActivity.LONG_PRESS_ACTION);
                 intent.putExtra(LongPressReceiver.POS_EXTRA, i);
                 c.sendBroadcast(intent);
