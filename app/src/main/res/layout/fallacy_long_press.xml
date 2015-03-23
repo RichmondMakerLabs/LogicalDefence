@@ -5,12 +5,24 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/save_title"
+        android:id="@+id/share_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:text="temp"
         android:textColor="@android:color/white"
         android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/share"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/ic_share_white_48dp" />
 
 </RelativeLayout>
